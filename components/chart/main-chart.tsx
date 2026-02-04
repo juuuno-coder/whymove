@@ -1,21 +1,5 @@
 "use client";
 
-import { createChart, ColorType, IChartApi, ISeriesApi } from "lightweight-charts";
-import React, { useEffect, useRef } from "react";
-
-export const MainChart = ({
-  data,
-  markers,
-  volatilityZones,
-  colors = {
-    backgroundColor: "transparent",
-    lineColor: "#2962FF",
-    textColor: "white",
-    areaTopColor: "#2962FF",
-    areaBottomColor: "rgba(41, 98, 255, 0.28)",
-  },
-}: {
-  data: { time: string | number; value: number }[] | { time: string | number; open: number; high: number; low: number; close: number }[];
   markers?: any[];
   volatilityZones?: {
     time: string | number; // Support timestamp

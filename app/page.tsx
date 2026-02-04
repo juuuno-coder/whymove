@@ -1,21 +1,14 @@
 "use client";
 
-import React from "react"; // Explicit import
+import React from "react";
 import { GridBackground } from "@/components/ui/grid-background";
-import { LiveTicker } from "@/components/ui/live-ticker";
-import { ReasonFeed, Reason } from "@/components/ui/reason-feed"; // Re-enabled
 import { Spotlight } from "@/components/ui/spotlight";
+import { LiveTicker } from "@/components/ui/live-ticker";
+import { ReasonFeed } from "@/components/ui/reason-feed";
 import { MainChart } from "@/components/chart/main-chart";
 import { ChatRoom } from "@/components/community/chat-room";
-import { SymbolSelector } from "@/components/chart/symbol-selector";
-import { VolatilityControlPanel } from "@/components/chart/volatility-control-panel"; 
-import { generateInitialData, generateNextCandle, SYMBOLS, Candle } from "@/lib/market-simulator";
 
 export default function Home() {
-  const [currentSymbol, setCurrentSymbol] = React.useState("BTC/USD");
-  const [chartData, setChartData] = React.useState<Candle[]>([]);
-  const [manualMarkers, setManualMarkers] = React.useState<any[]>([]);
-  const [volatilityZones, setVolatilityZones] = React.useState<any[]>([]);
   const [reasons, setReasons] = React.useState<Reason[]>([]);
   const [focusedTime, setFocusedTime] = React.useState<string | number | null>(null);
 
