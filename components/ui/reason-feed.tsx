@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ArrowUp, ArrowDown, Activity } from "lucide-react";
+import { Activity } from "lucide-react";
 
 export type Reason = {
   id: string;
@@ -29,7 +29,7 @@ function ReasonCard({ reason }: { reason: Reason }) {
   const [votes, setVotes] = useState(reason.votes);
   const [hasVoted, setHasVoted] = useState(false);
 
-  const handleUrlClick = (e: React.MouseEvent) => {
+  const handleUrlClick = () => {
      if (reason.url) {
         window.open(reason.url, "_blank", "noopener,noreferrer");
      }

@@ -9,10 +9,10 @@ export interface Candle {
 
 // Initial Data Generator
 export const generateInitialData = (count: number = 1000, startPrice: number = 50000): Candle[] => {
-  let data: Candle[] = [];
+  const data: Candle[] = [];
   let currentPrice = startPrice;
   // Start from 1000 minutes ago
-  let time = Math.floor(Date.now() / 1000) - (count * 60); 
+  const time = Math.floor(Date.now() / 1000) - (count * 60); 
 
   for (let i = 0; i < count; i++) {
     const volatility = 0.002; // 0.2% per candle

@@ -76,9 +76,9 @@ export const ChatRoom = ({ className }: { className?: string }) => {
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const loadedMessages = Object.entries(data).map(([key, value]: [string, any]) => ({
+        const loadedMessages = Object.entries(data).map(([key, value]) => ({
           id: key,
-          ...value,
+          ...(value as Omit<ChatMessage, "id">),
         }));
         loadedMessages.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
         setMessages(loadedMessages);
@@ -207,7 +207,7 @@ export const ChatRoom = ({ className }: { className?: string }) => {
                   <div className="flex items-center gap-2 text-yellow-500">
                       <DollarSign size={16} fill="currentColor" />
                       <span className="font-bold">{msg.user} donated {msg.amount}!</span>
-                      <span className="text-white text-xs ml-2">"{msg.text}"</span>
+                      <span className="text-white text-xs ml-2">&quot;{msg.text}&quot;</span>
                   </div>
               )}
            </div>

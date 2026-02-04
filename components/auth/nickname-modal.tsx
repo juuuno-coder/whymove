@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
-import { ref, set, get } from "firebase/database";
+import { ref, set } from "firebase/database";
 import { rtdb } from "@/lib/firebase";
 import { UserCheck } from "lucide-react";
 

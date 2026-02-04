@@ -9,16 +9,15 @@ import { MainChart } from "@/components/chart/main-chart";
 import { ChatRoom } from "@/components/community/chat-room";
 import { Header } from "@/components/layout/header";
 import { MarketCalendar, CalendarEvent } from "@/components/ui/market-calendar";
-import { SentimentMeter } from "@/components/ui/sentiment-meter";
 
 export default function Home() {
   // Static ticker data
   const tickerItems = [
-    { symbol: "BTC/USDT", price: "98,420", change: "+4.2%", isUp: true },
-    { symbol: "ETH/USDT", price: "2,850", change: "+1.2%", isUp: true },
-    { symbol: "SOL/USDT", price: "145", change: "-0.5%", isUp: false },
-    { symbol: "BNB/USDT", price: "620", change: "+0.8%", isUp: true },
-    { symbol: "XRP/USDT", price: "1.20", change: "-2.1%", isUp: false },
+    { symbol: "BTC/USDT", price: "98,420", change: "+4.2%", isUp: true, tvSymbol: "BINANCE:BTCUSDT" },
+    { symbol: "ETH/USDT", price: "2,850", change: "+1.2%", isUp: true, tvSymbol: "BINANCE:ETHUSDT" },
+    { symbol: "SOL/USDT", price: "145", change: "-0.5%", isUp: false, tvSymbol: "BINANCE:SOLUSDT" },
+    { symbol: "BNB/USDT", price: "620", change: "+0.8%", isUp: true, tvSymbol: "BINANCE:BNBUSDT" },
+    { symbol: "XRP/USDT", price: "1.20", change: "-2.1%", isUp: false, tvSymbol: "BINANCE:XRPUSDT" },
   ];
 
   // Placeholder for reasons (can be connected to an API later)

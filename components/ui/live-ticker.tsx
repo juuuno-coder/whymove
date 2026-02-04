@@ -9,17 +9,20 @@ export const LiveTicker = ({
   speed = "fast",
   pauseOnHover = true,
   className,
+  onSymbolSelect,
 }: {
   items: {
     symbol: string;
     price: string;
     change: string;
     isUp: boolean;
+    tvSymbol: string; // TradingView symbol
   }[];
   direction?: "left" | "right";
   speed?: "fast" | "normal" | "slow";
   pauseOnHover?: boolean;
   className?: string;
+  onSymbolSelect?: (symbol: string) => void;
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
@@ -27,53 +30,43 @@ export const LiveTicker = ({
   const [start, setStart] = useState(false);
 
   useEffect(() => {
-    addAnimation();
+    requestAnimationFrame(() => setStart(true));
   }, []);
 
-  function addAnimation() {
-    if (containerRef.current && scrollerRef.current) {
-      const scrollerContent = Array.from(scrollerRef.current.children);
-
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        if (scrollerRef.current) {
-          scrollerRef.current.appendChild(duplicatedItem);
+  useEffect(() => {
+    const getDirection = () => {
+      if (containerRef.current) {
+        if (direction === "left") {
+          containerRef.current.style.setProperty(
+            "--animation-direction",
+            "forwards"
+          );
+        } else {
+          containerRef.current.style.setProperty(
+            "--animation-direction",
+            "reverse"
+          );
         }
-      });
+      }
+    };
 
+    const getSpeed = () => {
+      if (containerRef.current) {
+        if (speed === "fast") {
+          containerRef.current.style.setProperty("--animation-duration", "20s");
+        } else if (speed === "normal") {
+          containerRef.current.style.setProperty("--animation-duration", "40s");
+        } else {
+          containerRef.current.style.setProperty("--animation-duration", "80s");
+        }
+      }
+    };
+
+    if (containerRef.current && scrollerRef.current) {
       getDirection();
       getSpeed();
-      setStart(true);
     }
-  }
-
-  const getDirection = () => {
-    if (containerRef.current) {
-      if (direction === "left") {
-        containerRef.current.style.setProperty(
-          "--animation-direction",
-          "forwards"
-        );
-      } else {
-        containerRef.current.style.setProperty(
-          "--animation-direction",
-          "reverse"
-        );
-      }
-    }
-  };
-
-  const getSpeed = () => {
-    if (containerRef.current) {
-      if (speed === "fast") {
-        containerRef.current.style.setProperty("--animation-duration", "20s");
-      } else if (speed === "normal") {
-        containerRef.current.style.setProperty("--animation-duration", "40s");
-      } else {
-        containerRef.current.style.setProperty("--animation-duration", "80s");
-      }
-    }
-  };
+  }, [direction, speed]);
 
   return (
     <div
@@ -86,26 +79,36 @@ export const LiveTicker = ({
       <ul
         ref={scrollerRef}
         className={cn(
-          "flex min-w-full shrink-0 gap-8 py-4 w-max flex-nowrap",
+          "flex min-w-full shrink-0 gap-16 py-4 w-max flex-nowrap", // Increased gap
           start && "animate-scroll",
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
-        {items.map((item, idx) => (
+        {/* Render items twice to create seamless loop without losing event handlers on clones */}
+        {[...items, ...items, ...items].map((item, idx) => (
           <li
             key={idx}
-            className="w-auto max-w-full relative rounded-2xl flex-shrink-0 px-4 py-2 flex items-center space-x-2 bg-neutral-900/50 border border-neutral-800"
+            className="w-auto max-w-full relative rounded-2xl flex-shrink-0"
           >
-            <span className="font-bold text-gray-100">{item.symbol}</span>
-            <span className="text-gray-300">{item.price}</span>
-            <span
-              className={cn(
-                "text-sm font-medium",
-                item.isUp ? "text-green-400" : "text-red-400"
-              )}
-            >
-              {item.change}
-            </span>
+             <button
+               onClick={() => onSymbolSelect?.(item.tvSymbol)}
+               className="px-6 py-3 flex items-center space-x-3 bg-neutral-900/50 border border-neutral-800 rounded-2xl hover:bg-neutral-800 transition-colors cursor-pointer"
+             >
+                <div className="flex flex-col items-start">
+                   <span className="font-bold text-gray-100 text-sm">{item.symbol}</span>
+                </div>
+                <div className="flex flex-col items-end">
+                   <span className="text-gray-300 text-xs">{item.price}</span>
+                   <span
+                     className={cn(
+                       "text-xs font-bold",
+                       item.isUp ? "text-green-400" : "text-red-400"
+                     )}
+                   >
+                     {item.change}
+                   </span>
+                </div>
+             </button>
           </li>
         ))}
       </ul>

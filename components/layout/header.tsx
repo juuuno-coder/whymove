@@ -2,9 +2,8 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
-import { Bell, User, LogOut, Settings, Menu } from "lucide-react";
+import { Bell, User, LogOut, Settings } from "lucide-react";
 import { LoginModal } from "@/components/auth/login-modal";
-import { cn } from "@/lib/utils";
 import { getAuth, signOut } from "firebase/auth";
 
 export function Header() {

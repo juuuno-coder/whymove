@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, memo } from "react";
 
-export const MainChart = memo(() => {
+export const MainChart = memo(({ symbol = "BINANCE:BTCUSDT" }: { symbol?: string }) => {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export const MainChart = memo(() => {
     script.innerHTML = `
       {
         "autosize": true,
-        "symbol": "BINANCE:BTCUSDT",
+        "symbol": "${symbol}",
         "interval": "D",
         "timezone": "Asia/Seoul",
         "theme": "dark",
@@ -30,7 +30,7 @@ export const MainChart = memo(() => {
         "support_host": "https://www.tradingview.com"
       }`;
     container.current.appendChild(script);
-  }, []);
+  }, [symbol]);
 
   return (
     <div className="h-full w-full rounded-xl overflow-hidden border border-[#2B2B43] shadow-xl bg-[#131722]" ref={container}>

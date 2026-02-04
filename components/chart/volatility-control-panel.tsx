@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { AlertTriangle, TrendingUp, Zap, Radio } from "lucide-react";
 
@@ -17,7 +17,7 @@ const TriggerButton = ({
 }: { 
   onClick: () => void; 
   label: string; 
-  icon: any; 
+  icon: React.ElementType; 
   color: string 
 }) => {
   return (
