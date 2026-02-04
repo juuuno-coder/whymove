@@ -7,6 +7,7 @@ import { LiveTicker } from "@/components/ui/live-ticker";
 import { ReasonFeed, Reason } from "@/components/ui/reason-feed";
 import { MainChart } from "@/components/chart/main-chart";
 import { ChatRoom } from "@/components/community/chat-room";
+import { Header } from "@/components/layout/header";
 
 export default function Home() {
   // Static ticker data
@@ -54,11 +55,13 @@ export default function Home() {
     <main className="min-h-screen w-full bg-black relative overflow-hidden text-neutral-200 font-sans selection:bg-cyan-500/30">
       <GridBackground className="min-h-screen w-full items-start overflow-y-auto">
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+        
+        <Header />
 
-        <div className="w-full max-w-7xl mx-auto px-4 py-8 flex flex-col gap-6 relative z-10">
+        <div className="w-full max-w-7xl mx-auto px-4 py-8 flex flex-col gap-6 relative z-10 mt-16">
           
-          {/* Header */}
-          <div className="flex flex-col items-center justify-center text-center space-y-4 pt-8 pb-2">
+          {/* Header Title Section */}
+          <div className="flex flex-col items-center justify-center text-center space-y-4 pt-4 pb-2">
             <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-500 tracking-tight">
               Why Is <span className="text-cyan-400">Bitcoin</span> Moving?
             </h1>
