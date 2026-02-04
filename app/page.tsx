@@ -96,7 +96,6 @@ export default function Home() {
   ]);
 
   return (
-  return (
     <main className="h-screen w-full bg-black relative overflow-hidden text-neutral-200 font-sans selection:bg-cyan-500/30 flex flex-col">
       <Header />
       
