@@ -92,73 +92,63 @@ export default function Home() {
   ]);
 
   return (
-    <main className="min-h-screen w-full bg-black relative overflow-hidden text-neutral-200 font-sans selection:bg-cyan-500/30">
-      <GridBackground className="min-h-screen w-full items-start overflow-y-auto">
-        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
-        
-        <Header />
+  return (
+    <main className="h-screen w-full bg-black relative overflow-hidden text-neutral-200 font-sans selection:bg-cyan-500/30 flex flex-col">
+      <Header />
+      
+      {/* Background with lower z-index */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+         <GridBackground className="h-full w-full opacity-40" />
+         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+      </div>
 
-        <div className="w-full max-w-7xl mx-auto px-4 py-8 flex flex-col gap-6 relative z-10 mt-16">
-          
-          {/* Header Title Section */}
-          <div className="flex flex-col items-center justify-center text-center space-y-4 pt-4 pb-2">
-            <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-500 tracking-tight">
-              Why Is <span className="text-cyan-400">Bitcoin</span> Moving?
-            </h1>
-            <p className="text-neutral-400 max-w-lg mx-auto text-base md:text-lg font-light">
-              Real-time volatility tracking & Community Intelligence.
-            </p>
-          </div>
-
-          {/* Ticker */}
-          <div className="w-full -mx-4 md:mx-0 border-y border-white/5 bg-black/40 backdrop-blur-md">
+      <div className="relative z-10 flex flex-col h-full pt-16">
+          {/* Ticker - Reduced vertical padding */}
+          <div className="w-full border-b border-white/5 bg-black/40 backdrop-blur-md h-10 flex-none z-20">
              <LiveTicker items={tickerItems} speed="normal" />
           </div>
 
-          {/* Main Dashboard Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
-            {/* Chart Area */}
-            <div className="lg:col-span-8 min-h-[600px] border border-neutral-800 rounded-2xl bg-neutral-900/30 backdrop-blur-md p-1 relative group overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-2xl pointer-events-none z-10" />
-              
-              <div className="h-full w-full rounded-xl bg-[#131722] border border-neutral-800 flex flex-col overflow-hidden">
-                 {/* Main Chart (TradingView Widget) */}
-                 <div className="flex-1 w-full h-full relative">
-                    <MainChart />
-                 </div>
-              </div>
+          {/* Main Dashboard - Flex Layout for 100% height usage */}
+          <div className="flex-1 w-full max-w-[1920px] mx-auto p-3 gap-3 flex flex-col lg:flex-row overflow-hidden">
+            
+            {/* LEFT COLUMN: Chart & Info */}
+            <div className="flex-1 flex flex-col gap-3 min-w-0 h-full">
+               
+               {/* Top: Chart (Flex Grow) */}
+               <div className="flex-1 min-h-0 border border-neutral-800 rounded-2xl bg-neutral-900/30 backdrop-blur-md relative overflow-hidden shadow-2xl group">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-10" />
+                  <div className="h-full w-full rounded-xl bg-[#131722] flex flex-col">
+                      <MainChart />
+                  </div>
+               </div>
+
+               {/* Bottom: Drivers & Calendar (Fixed Height ~25-30%) */}
+               <div className="h-[280px] flex gap-3 flex-none min-h-0">
+                  {/* Drivers (Wider) */}
+                  <div className="flex-[2] border border-neutral-800 rounded-2xl bg-neutral-900/30 backdrop-blur-md p-4 overflow-hidden flex flex-col">
+                     <h2 className="text-sm font-bold text-neutral-100 mb-3 flex items-center gap-2 flex-none">
+                        <span className="w-1 h-4 bg-cyan-500 rounded-full" />
+                        Market Drivers
+                     </h2>
+                     <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+                        <ReasonFeed reasons={reasons} />
+                     </div>
+                  </div>
+
+                  {/* Calendar (Narrower, Fixed) */}
+                  <div className="flex-1 border border-neutral-800 rounded-2xl bg-neutral-900/30 backdrop-blur-md p-4 overflow-hidden flex flex-col min-w-[300px]">
+                      <MarketCalendar events={calendarEvents} />
+                  </div>
+               </div>
             </div>
 
-            {/* Side Feed: Community & Chat */}
-            <div className="lg:col-span-4 flex flex-col gap-6 h-[600px]">
-              <ChatRoom className="h-full shadow-2xl shadow-black/50" />
+            {/* RIGHT COLUMN: Chat (Fixed Width ~350-400px) */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] flex-none border border-neutral-800 rounded-2xl bg-neutral-900/30 backdrop-blur-md overflow-hidden shadow-2xl shadow-black/50 h-full">
+               <ChatRoom className="h-full" />
             </div>
+
           </div>
-
-          {/* Reason Feed Section (Optional / Future Use) */}
-          {/* Bottom Section: Drivers & Calendar */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full min-h-[400px]">
-            {/* Market Drivers (Left) */}
-            <div className="flex flex-col">
-              <h2 className="text-xl font-bold text-neutral-100 mb-4 flex items-center gap-2">
-                <span className="w-1 h-6 bg-cyan-500 rounded-full" />
-                Market Drivers
-              </h2>
-              <ReasonFeed reasons={reasons} />
-              {reasons.length === 0 && (
-                <div className="text-center py-8 text-neutral-500 border border-neutral-800 rounded-xl bg-neutral-900/20 text-sm">
-                  Waiting for market events...
-                </div>
-              )}
-            </div>
-
-            {/* Upcoming Schedule (Right) */}
-            <div className="flex flex-col">
-               <MarketCalendar events={calendarEvents} />
-            </div>
-          </div>
-        </div>
-      </GridBackground>
+      </div>
     </main>
   );
 }

@@ -13,7 +13,7 @@ export type Reason = {
 
 export function ReasonFeed({ reasons }: { reasons: Reason[]; onReasonClick?: (reason: Reason) => void }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+    <div className="flex flex-col gap-2 w-full">
       {reasons.map((reason) => (
         <ReasonCard key={reason.id} reason={reason} />
       ))}
@@ -34,16 +34,12 @@ function ReasonCard({ reason }: { reason: Reason }) {
   return (
     <div 
       onClick={handleClick}
-      className="group relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950/50 p-4 hover:border-neutral-700 transition-colors backdrop-blur-sm cursor-pointer active:scale-95 transition-transform"
+      className="group relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950/50 p-3 hover:border-neutral-700 transition-colors backdrop-blur-sm cursor-pointer active:scale-99"
     >
       <div
         className={cn(
-          "absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-10 pointer-events-none",
-          isBullish
-            ? "from-green-500 to-transparent"
-            : isBearish
-            ? "from-red-500 to-transparent"
-            : "from-blue-500 to-transparent"
+          "absolute left-0 top-0 bottom-0 w-1 transition-colors",
+          isBullish ? "bg-green-500" : isBearish ? "bg-red-500" : "bg-blue-500"
         )}
       />
 
