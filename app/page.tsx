@@ -8,6 +8,7 @@ import { ReasonFeed, Reason } from "@/components/ui/reason-feed";
 import { MainChart } from "@/components/chart/main-chart";
 import { ChatRoom } from "@/components/community/chat-room";
 import { Header } from "@/components/layout/header";
+import { MarketCalendar, CalendarEvent } from "@/components/ui/market-calendar";
 
 export default function Home() {
   // Static ticker data
@@ -48,6 +49,45 @@ export default function Home() {
       timestamp: "1 hour ago",
       tags: ["Macro", "Fed"],
       impact: "high"
+    }
+  ]);
+
+  // Static Calendar Data (Mock)
+  const [calendarEvents] = useState<CalendarEvent[]>([
+    {
+      id: "1",
+      date: "Today",
+      time: "14:00 PM",
+      title: "FOMC Meeting Minutes Release",
+      category: "Macro",
+      impact: "high",
+      description: "Detailed release of the Fed's recent policy meeting."
+    },
+    {
+      id: "2",
+      date: "Today",
+      time: "16:00 PM",
+      title: "NVIDIA (NVDA) Q4 Earnings Call",
+      category: "BigTech",
+      impact: "high",
+      description: "Market expects major volatility based on AI guidance."
+    },
+    {
+      id: "3",
+      date: "Tomorrow",
+      time: "09:00 AM",
+      title: "President Trump: White House Briefing",
+      category: "Gov",
+      impact: "medium",
+      description: "Expected remarks on crypto regulation."
+    },
+    {
+      id: "4",
+      date: "Feb 24",
+      time: "10:00 AM",
+      title: "Vitalik Buterin Speech at ETH Denver",
+      category: "Crypto",
+      impact: "medium"
     }
   ]);
 
@@ -96,19 +136,26 @@ export default function Home() {
           </div>
 
           {/* Reason Feed Section (Optional / Future Use) */}
-          <div className="w-full">
-               <h2 className="text-xl font-bold text-neutral-100 mb-4 flex items-center gap-2">
-                 <span className="w-1 h-6 bg-cyan-500 rounded-full" />
-                 Market Drivers
-               </h2>
-               <ReasonFeed 
-                 reasons={reasons} 
-               />
-               {reasons.length === 0 && (
-                  <div className="text-center py-8 text-neutral-500 border border-neutral-800 rounded-xl bg-neutral-900/20 text-sm">
-                     Waiting for market events...
-                  </div>
-               )}
+          {/* Bottom Section: Drivers & Calendar */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full min-h-[400px]">
+            {/* Market Drivers (Left) */}
+            <div className="flex flex-col">
+              <h2 className="text-xl font-bold text-neutral-100 mb-4 flex items-center gap-2">
+                <span className="w-1 h-6 bg-cyan-500 rounded-full" />
+                Market Drivers
+              </h2>
+              <ReasonFeed reasons={reasons} />
+              {reasons.length === 0 && (
+                <div className="text-center py-8 text-neutral-500 border border-neutral-800 rounded-xl bg-neutral-900/20 text-sm">
+                  Waiting for market events...
+                </div>
+              )}
+            </div>
+
+            {/* Upcoming Schedule (Right) */}
+            <div className="flex flex-col">
+               <MarketCalendar events={calendarEvents} />
+            </div>
           </div>
         </div>
       </GridBackground>
