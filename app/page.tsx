@@ -19,29 +19,30 @@ export default function Home() {
   ];
 
   // Placeholder for reasons (can be connected to an API later)
+  // Placeholder for simulated AI crawled data
   const [reasons] = useState<Reason[]>([
     {
       id: "1",
-      title: "Bitcoin Breaks $98k",
-      description: "BTC surges past $98,000 as ETF inflows reach record highs.",
+      title: "Bitcoin Surges Past $98k as ETF Inflows Hit Record Highs",
+      url: "https://www.coindesk.com/markets/2024/11/21/bitcoin-price-hits-record-high/",
       sentiment: "bullish",
-      timestamp: "2 mins ago",
+      timestamp: "10 mins ago",
       tags: ["Bitcoin", "ETF"],
       impact: "high"
     },
     {
       id: "2",
-      title: "SEC Approval Rumors",
-      description: "Sources suggest SEC is considering approval for Solana ETF next month.",
+      title: "Solana ETF Approval Odds Increase to 70%, Says Bloomberg Analyst",
+      url: "https://cointelegraph.com/news/solana-etf-approval-odds-increase",
       sentiment: "bullish",
-      timestamp: "15 mins ago",
-      tags: ["Regulation", "SEC"],
+      timestamp: "35 mins ago",
+      tags: ["Solana", "Regulation"],
       impact: "medium"
     },
     {
       id: "3",
-      title: "Fed Interest Rate Decision",
-      description: "Powell signals 'higher for longer', causing minor dip in tech stocks.",
+      title: "Fed Chair Powell Signals Rate Cuts May Be Delayed Until Late 2025",
+      url: "https://www.cnbc.com/2024/11/20/fed-powell-rate-cuts.html",
       sentiment: "bearish",
       timestamp: "1 hour ago",
       tags: ["Macro", "Fed"],
@@ -99,7 +100,6 @@ export default function Home() {
                </h2>
                <ReasonFeed 
                  reasons={reasons} 
-                 onReasonClick={() => {}} 
                />
                {reasons.length === 0 && (
                   <div className="text-center py-8 text-neutral-500 border border-neutral-800 rounded-xl bg-neutral-900/20 text-sm">
