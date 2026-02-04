@@ -8,8 +8,8 @@ export const MainChart = memo(() => {
   useEffect(() => {
     if (!container.current) return;
 
-    // Check if script already exists to avoid duplication
-    if (container.current.querySelector("script")) return;
+    // Clean up previous script if any
+    container.current.innerHTML = '';
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
