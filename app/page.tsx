@@ -9,6 +9,7 @@ import { MainChart } from "@/components/chart/main-chart";
 import { ChatRoom } from "@/components/community/chat-room";
 import { Header } from "@/components/layout/header";
 import { MarketCalendar, CalendarEvent } from "@/components/ui/market-calendar";
+import { SentimentMeter } from "@/components/ui/sentiment-meter";
 
 export default function Home() {
   // Static ticker data
