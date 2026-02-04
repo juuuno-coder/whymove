@@ -30,7 +30,8 @@ export default function Home() {
       sentiment: "bullish",
       timestamp: "10 mins ago",
       tags: ["Bitcoin", "ETF"],
-      impact: "high"
+      impact: "high",
+      votes: 1242
     },
     {
       id: "2",
@@ -39,7 +40,8 @@ export default function Home() {
       sentiment: "bullish",
       timestamp: "35 mins ago",
       tags: ["Solana", "Regulation"],
-      impact: "medium"
+      impact: "medium",
+      votes: 856
     },
     {
       id: "3",
@@ -48,7 +50,8 @@ export default function Home() {
       sentiment: "bearish",
       timestamp: "1 hour ago",
       tags: ["Macro", "Fed"],
-      impact: "high"
+      impact: "high",
+      votes: 430
     }
   ]);
 

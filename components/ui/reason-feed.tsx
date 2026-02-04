@@ -4,14 +4,15 @@ import { ArrowUp, ArrowDown, Activity } from "lucide-react";
 export type Reason = {
   id: string;
   title: string;
-  url: string; // New field for external link
+  url: string; 
   sentiment: "bullish" | "bearish" | "neutral";
   timestamp: string;
   tags: string[];
   impact: "high" | "medium" | "low";
+  votes: number; // New field
 };
 
-export function ReasonFeed({ reasons }: { reasons: Reason[]; onReasonClick?: (reason: Reason) => void }) {
+export function ReasonFeed({ reasons }: { reasons: Reason[] }) {
   return (
     <div className="flex flex-col gap-2 w-full">
       {reasons.map((reason) => (
@@ -24,17 +25,30 @@ export function ReasonFeed({ reasons }: { reasons: Reason[]; onReasonClick?: (re
 function ReasonCard({ reason }: { reason: Reason }) {
   const isBullish = reason.sentiment === "bullish";
   const isBearish = reason.sentiment === "bearish";
+  const [votes, setVotes] = React.useState(reason.votes);
+  const [hasVoted, setHasVoted] = React.useState(false);
 
-  const handleClick = () => {
+  const handleUrlClick = (e: React.MouseEvent) => {
      if (reason.url) {
         window.open(reason.url, "_blank", "noopener,noreferrer");
      }
   };
 
+  const handleVote = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    if (!hasVoted) {
+      setVotes(v => v + 1);
+      setHasVoted(true);
+    } else {
+      setVotes(v => v - 1);
+      setHasVoted(false);
+    }
+  };
+
   return (
     <div 
-      onClick={handleClick}
-      className="group relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950/50 p-3 hover:border-neutral-700 transition-colors backdrop-blur-sm cursor-pointer active:scale-99"
+      onClick={handleUrlClick}
+      className="group relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950/50 p-3 hover:border-neutral-700 transition-colors backdrop-blur-sm cursor-pointer active:scale-[0.99]"
     >
       <div
         className={cn(
@@ -43,29 +57,35 @@ function ReasonCard({ reason }: { reason: Reason }) {
         )}
       />
 
-      <div className="relative z-10 flex flex-col gap-2">
+      <div className="relative z-10 flex flex-col gap-2 pl-2">
         <div className="flex items-center justify-between">
           <span className="text-xs text-neutral-500 font-mono">
             {reason.timestamp}
           </span>
-          <div
-            className={cn(
-              "flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider",
-              isBullish
-                ? "bg-green-500/10 text-green-500 shadow-[0_0_10px_-4px_rgba(74,222,128,0.5)]"
-                : isBearish
-                ? "bg-red-500/10 text-red-500 shadow-[0_0_10px_-4px_rgba(248,113,113,0.5)]"
-                : "bg-blue-500/10 text-blue-500"
-            )}
-          >
-            {isBullish ? (
-              <ArrowUp size={10} />
-            ) : isBearish ? (
-              <ArrowDown size={10} />
-            ) : (
-              <Activity size={10} />
-            )}
-            {reason.sentiment.toUpperCase()}
+          <div className="flex items-center gap-2">
+             <button
+               onClick={handleVote}
+               className={cn(
+                 "flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold transition-all border",
+                 hasVoted 
+                   ? "bg-orange-500/20 text-orange-400 border-orange-500/50 shadow-[0_0_10px_-4px_rgba(251,146,60,0.5)]" 
+                   : "bg-neutral-800/50 text-neutral-500 border-transparent hover:bg-neutral-700 hover:text-neutral-300"
+               )}
+             >
+               🔥 {votes}
+             </button>
+             <div
+               className={cn(
+                 "flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider",
+                 isBullish
+                   ? "bg-green-500/10 text-green-500"
+                   : isBearish
+                   ? "bg-red-500/10 text-red-500"
+                   : "bg-blue-500/10 text-blue-500"
+               )}
+             >
+               {reason.sentiment.toUpperCase()}
+             </div>
           </div>
         </div>
         
@@ -73,7 +93,7 @@ function ReasonCard({ reason }: { reason: Reason }) {
            <h3 className="font-bold text-neutral-200 text-sm leading-snug group-hover:text-cyan-400 transition-colors line-clamp-2">
             {reason.title}
            </h3>
-           <Activity size={16} className="text-neutral-700 opacity-50 group-hover:opacity-100 group-hover:text-cyan-500 transition-all shrink-0" />
+           <Activity size={14} className="text-neutral-700 opacity-50 group-hover:opacity-100 group-hover:text-cyan-500 transition-all shrink-0" />
         </div>
 
         <div className="flex flex-wrap gap-2 mt-1">
