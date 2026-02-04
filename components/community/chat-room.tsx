@@ -26,9 +26,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   { id: "1", type: "chat", text: "System: Connecting to live channel...", timestamp: "Now" },
 ];
 
-import { NicknameModal } from "@/components/auth/nickname-modal";
-import { useAuth } from "@/components/auth/auth-provider";
-import { get, child } from "firebase/database";
+
 
 export const ChatRoom = ({ className }: { className?: string }) => {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
