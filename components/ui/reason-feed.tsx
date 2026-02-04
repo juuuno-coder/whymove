@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowUp, ArrowDown, Activity } from "lucide-react";
 
@@ -25,8 +26,8 @@ export function ReasonFeed({ reasons }: { reasons: Reason[] }) {
 function ReasonCard({ reason }: { reason: Reason }) {
   const isBullish = reason.sentiment === "bullish";
   const isBearish = reason.sentiment === "bearish";
-  const [votes, setVotes] = React.useState(reason.votes);
-  const [hasVoted, setHasVoted] = React.useState(false);
+  const [votes, setVotes] = useState(reason.votes);
+  const [hasVoted, setHasVoted] = useState(false);
 
   const handleUrlClick = (e: React.MouseEvent) => {
      if (reason.url) {
