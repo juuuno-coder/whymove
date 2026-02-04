@@ -20,7 +20,7 @@ export const MainChart = memo(() => {
         "autosize": true,
         "symbol": "BINANCE:BTCUSDT",
         "interval": "D",
-        "timezone": "Etc/UTC",
+        "timezone": "Asia/Seoul",
         "theme": "dark",
         "style": "1",
         "locale": "en",

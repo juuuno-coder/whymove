@@ -20,7 +20,7 @@ export function MarketCalendar({ events }: { events: CalendarEvent[] }) {
         <span className="w-1 h-6 bg-purple-500 rounded-full" />
         <h2 className="text-xl font-bold text-neutral-100 flex items-center gap-2">
            Upcoming Scedule
-           <span className="text-xs font-normal text-neutral-500 border border-neutral-800 px-2 py-0.5 rounded-full">EST (UTC-5)</span>
+           <span className="text-xs font-normal text-neutral-500 border border-neutral-800 px-2 py-0.5 rounded-full">KST (UTC+9)</span>
         </h2>
       </div>
 
