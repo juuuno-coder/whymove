@@ -19,7 +19,35 @@ export default function Home() {
   ];
 
   // Placeholder for reasons (can be connected to an API later)
-  const [reasons] = useState<Reason[]>([]);
+  const [reasons] = useState<Reason[]>([
+    {
+      id: "1",
+      title: "Bitcoin Breaks $98k",
+      description: "BTC surges past $98,000 as ETF inflows reach record highs.",
+      sentiment: "bullish",
+      timestamp: "2 mins ago",
+      tags: ["Bitcoin", "ETF"],
+      impact: "high"
+    },
+    {
+      id: "2",
+      title: "SEC Approval Rumors",
+      description: "Sources suggest SEC is considering approval for Solana ETF next month.",
+      sentiment: "bullish",
+      timestamp: "15 mins ago",
+      tags: ["Regulation", "SEC"],
+      impact: "medium"
+    },
+    {
+      id: "3",
+      title: "Fed Interest Rate Decision",
+      description: "Powell signals 'higher for longer', causing minor dip in tech stocks.",
+      sentiment: "bearish",
+      timestamp: "1 hour ago",
+      tags: ["Macro", "Fed"],
+      impact: "high"
+    }
+  ]);
 
   return (
     <main className="min-h-screen w-full bg-black relative overflow-hidden text-neutral-200 font-sans selection:bg-cyan-500/30">
