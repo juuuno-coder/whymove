@@ -16,15 +16,25 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
-const rtdb = getDatabase(app);
-const auth = getAuth(app);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-let analytics;
+let db, rtdb, auth, analytics;
+
+try {
+  if (firebaseConfig.projectId) {
+    db = getFirestore(app);
+    rtdb = getDatabase(app);
+    auth = getAuth(app);
+  } else {
+    console.warn("Firebase config missing. Skipping initialization.");
+  }
+} catch (e) {
+  console.warn("Firebase init failed:", e);
+}
+
 if (typeof window !== "undefined") {
   isSupported().then((supported) => {
-    if (supported) {
+    if (supported && app) {
       analytics = getAnalytics(app);
     }
   });
