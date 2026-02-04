@@ -6,6 +6,8 @@ import { Send, User, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { rtdb } from "@/lib/firebase";
 import { ref, onValue, push, serverTimestamp, query, limitToLast, orderByChild } from "firebase/database";
 import { NicknameModal } from "@/components/auth/nickname-modal";
+import { LoginModal } from "@/components/auth/login-modal";
+import { useAuth } from "@/components/auth/auth-provider";
 import { get, child } from "firebase/database";
 export type MessageType = "chat" | "alert" | "donation";
 
