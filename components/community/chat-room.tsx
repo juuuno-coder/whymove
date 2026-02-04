@@ -2,17 +2,18 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Send, User, Zap, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
+import { Send, User, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { rtdb } from "@/lib/firebase";
 import { ref, onValue, push, serverTimestamp, query, limitToLast, orderByChild } from "firebase/database";
-
-// Types
+import { NicknameModal } from "@/components/auth/nickname-modal";
+import { get, child } from "firebase/database";
 export type MessageType = "chat" | "alert" | "donation";
 
 export interface ChatMessage {
   id: string;
   type: MessageType;
   user?: string;
+  photoURL?: string;
   text: string;
   timestamp: string | number;
   amount?: string;
@@ -25,36 +26,60 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   { id: "1", type: "chat", text: "System: Connecting to live channel...", timestamp: "Now" },
 ];
 
+import { NicknameModal } from "@/components/auth/nickname-modal";
+import { useAuth } from "@/components/auth/auth-provider";
+import { get, child } from "firebase/database";
+
 export const ChatRoom = ({ className }: { className?: string }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [username, setUsername] = useState("Guest");
+  
+  const { user } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false);
+  const [userNickname, setUserNickname] = useState<string | null>(null);
 
-  // Load username
+  // Check/Load user profile on login
   useEffect(() => {
-    const savedName = localStorage.getItem("whymove_username");
-    if (savedName) setUsername(savedName);
-    else {
-        const newName = `Guest${Math.floor(Math.random() * 1000)}`;
-        localStorage.setItem("whymove_username", newName);
-        setUsername(newName);
+    if (user && rtdb) {
+        // 1. Try local storage first for speed
+        const cached = localStorage.getItem("whymove_nickname");
+        if (cached) {
+            setUserNickname(cached);
+        }
+
+        // 2. Verify with DB (source of truth)
+        get(child(ref(rtdb), `users/${user.uid}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                setUserNickname(data.nickname);
+                localStorage.setItem("whymove_nickname", data.nickname);
+            } else {
+                // New user! Trigger Onboarding
+                setIsNicknameModalOpen(true);
+            }
+        }).catch((err) => {
+            console.error("Error fetching profile:", err);
+        });
+    } else {
+        setUserNickname(null);
     }
-  }, []);
+  }, [user]);
 
-  // Subscribe to Firebase
+  // Subscribe to Firebase Realtime Database
   useEffect(() => {
+    if (!rtdb) return;
+
     const messagesRef = query(ref(rtdb, "messages"), orderByChild("timestamp"), limitToLast(50));
     
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Convert object to array
         const loadedMessages = Object.entries(data).map(([key, value]: [string, any]) => ({
           id: key,
           ...value,
         }));
-        // Sort by timestamp
         loadedMessages.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
         setMessages(loadedMessages);
       } else {
@@ -65,18 +90,34 @@ export const ChatRoom = ({ className }: { className?: string }) => {
     return () => unsubscribe();
   }, []);
 
-  // Auto-scroll
+  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     e?.preventDefault();
+    
+    // Auth Check
+    if (!user) {
+        setIsLoginModalOpen(true);
+        return;
+    }
+
+    // Onboarding Check
+    if (!userNickname) {
+        setIsNicknameModalOpen(true);
+        return;
+    }
+
     if (!input.trim()) return;
 
     try {
+        if (!rtdb) throw new Error("Database not initialized");
+
         await push(ref(rtdb, "messages"), {
-            user: username,
+            user: userNickname, // Use nickname instead of displayName
+            photoURL: user.photoURL,
             text: input,
             type: "chat",
             timestamp: serverTimestamp(),
@@ -90,21 +131,38 @@ export const ChatRoom = ({ className }: { className?: string }) => {
 
   return (
     <div className={cn("flex flex-col h-full bg-[#131722] border border-[#2B2B43] rounded-xl overflow-hidden", className)}>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      
+      <NicknameModal 
+        isOpen={isNicknameModalOpen} 
+        onComplete={(name) => {
+            setUserNickname(name);
+            setIsNicknameModalOpen(false);
+        }} 
+      />
+
       {/* Header */}
       <div className="px-4 py-3 border-b border-[#2B2B43] bg-[#1e222d] flex justify-between items-center">
         <div className="flex items-center gap-2">
            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
            <span className="font-bold text-neutral-200">Live Chat</span>
         </div>
-        <div className="text-xs text-neutral-500 flex items-center gap-1 cursor-pointer hover:text-white" onClick={() => {
-            const newName = prompt("Enter new username:", username);
-            if(newName) {
-                setUsername(newName);
-                localStorage.setItem("whymove_username", newName);
-            }
-        }}>
-           <User size={12} />
-           {username}
+        <div className="text-xs text-neutral-500 flex items-center gap-1 cursor-pointer hover:text-white" onClick={() => !user && setIsLoginModalOpen(true)}>
+           {user ? (
+             <div className="flex items-center gap-2" onClick={() => setIsNicknameModalOpen(true)} title="Change Nickname">
+                {user.photoURL ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={user.photoURL} alt="user" className="w-4 h-4 rounded-full" />
+                ) : (
+                    <User size={12} />
+                )}
+                <span className={userNickname ? "text-cyan-400 font-bold" : ""}>{userNickname || "Setting up..."}</span>
+             </div>
+           ) : (
+             <span className="text-cyan-400 font-bold flex items-center gap-1">
+                <User size={12} /> Sign In
+             </span>
+           )}
         </div>
       </div>
 
@@ -125,7 +183,11 @@ export const ChatRoom = ({ className }: { className?: string }) => {
               {/* Chat Message */}
               {msg.type === 'chat' && (
                  <div className="flex items-start gap-2">
-                    <span className={cn("font-bold whitespace-nowrap", msg.user === username ? "text-cyan-400" : "text-neutral-400")}>
+                    <span className={cn("font-bold whitespace-nowrap flex items-center gap-1", msg.user === userNickname ? "text-cyan-400" : "text-neutral-400")}>
+                        {msg.photoURL && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={msg.photoURL} alt="avatar" className="w-4 h-4 rounded-full inline-block" />
+                        )}
                         {msg.user}:
                     </span>
                     <span className="text-neutral-300 break-words leading-relaxed">{msg.text}</span>
@@ -159,13 +221,12 @@ export const ChatRoom = ({ className }: { className?: string }) => {
           type="text" 
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Send a message..."
+          placeholder={user ? (userNickname ? `Chat as ${userNickname}...` : "Setting up profile...") : "Sign in to chat..."}
           className="flex-1 bg-[#131722] border border-[#2B2B43] rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
         />
         <button 
           type="submit"
-          disabled={!input.trim()}
-          className="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className={cn("p-2 rounded transition-colors text-white", user ? "bg-cyan-600 hover:bg-cyan-500" : "bg-neutral-700 hover:bg-neutral-600")}
         >
            <Send size={16} />
         </button>
